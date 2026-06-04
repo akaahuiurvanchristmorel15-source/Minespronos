@@ -1,16 +1,22 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Lock, ArrowRight, Eye, EyeOff, Hash, Mail, Shield, User } from 'lucide-react';
-import { useForm, Head } from '@inertiajs/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Lock, ArrowRight, Eye, EyeOff, Hash, Mail, Shield, User, X, MessageCircle, QrCode } from 'lucide-react';
+import { useForm, Head, Link } from '@inertiajs/react';
 
 export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [isAdminLogin, setIsAdminLogin] = useState(false);
+
     const { data, setData, post, processing, errors, clearErrors } = useForm({
         account_number: '',
         password: '',
         remember: false,
     });
+
+    const whatsappNumber = "2250150663744";
+    const whatsappMessage = encodeURIComponent("Bonjour, je souhaite créer un compte sur Mines Vision.");
+    const whatsappLink = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(whatsappLink)}&color=f97316`;
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,6 +32,7 @@ export default function Login() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#FFFDFB] p-6 selection:bg-orange-200 selection:text-orange-900 bg-gradient-to-b from-orange-50/50 to-transparent">
             <Head title="Se connecter" />
+
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -110,7 +117,7 @@ export default function Login() {
                     </button>
                 </form>
 
-                <div className="mt-8 text-center">
+                <div className="mt-8 space-y-4 flex flex-col items-center">
                     <button
                         type="button"
                         onClick={toggleMode}
@@ -122,8 +129,20 @@ export default function Login() {
                             <><Shield size={16} /> Je suis administrateur</>
                         )}
                     </button>
+
+                    {!isAdminLogin && (
+                        <div className="pt-4 border-t border-stone-100 w-full text-center">
+                            <Link
+                                href="/register"
+                                className="text-sm font-bold text-orange-400 hover:text-orange-600 transition-colors cursor-pointer"
+                            >
+                                Pas encore de compte ? Créer mon compte
+                            </Link>
+                        </div>
+                    )}
                 </div>
             </motion.div>
+
         </div>
     );
 }

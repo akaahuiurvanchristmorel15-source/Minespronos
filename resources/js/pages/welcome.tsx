@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import {
     ShieldCheck, Zap, Menu, Facebook, Twitter,
     Instagram, Mail, ArrowRight, MousePointer2,
-    Smartphone, ChevronRight
+    Smartphone, ChevronRight, Copy, CheckCircle2
 } from 'lucide-react';
 
 // --- COMPOSANT HEADER (Version Claire) ---
@@ -87,6 +87,13 @@ export default function WelcomePage() {
     const { scrollYProgress } = useScroll();
     const opacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
     const { auth } = usePage().props as any;
+    const [copied, setCopied] = React.useState(false);
+
+    const copyPromoCode = () => {
+        navigator.clipboard.writeText('ARGENT444');
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     const features = [
         { icon: <Zap />, title: "Analyse Live", desc: "Des prédictions basées sur des algorithmes de probabilités chauds." },
@@ -178,6 +185,53 @@ export default function WelcomePage() {
                         <Link href="/login" className="w-full bg-orange-500 text-white font-black py-5 rounded-2xl hover:bg-orange-600 transition-all text-lg shadow-lg shadow-orange-500/30 inline-block text-center mt-6">
                             SE CONNECTER MAINTENANT
                         </Link>
+                    </motion.div>
+
+                    {/* 1win Promo Block */}
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }}
+                        className="mt-12 p-1 rounded-[32px] bg-[#111621] border border-[#3476e1]/30 shadow-[0_0_40px_rgba(52,118,225,0.1)] overflow-hidden relative group"
+                    >
+                        <div className="absolute top-0 right-0 p-4">
+                            <div className="w-12 h-12 bg-[#3476e1]/10 rounded-full flex items-center justify-center">
+                                <Zap className="text-[#3476e1] w-6 h-6 animate-pulse" />
+                            </div>
+                        </div>
+
+                        <div className="p-8 text-center sm:text-left sm:flex items-center justify-between gap-6">
+                            <div className="mb-6 sm:mb-0">
+                                <div className="flex items-center gap-2 mb-2 justify-center sm:justify-start">
+                                    <span className="text-[#3476e1] font-black text-2xl tracking-tighter italic">1win</span>
+                                    <span className="bg-[#3476e1] text-white text-[10px] font-black px-2 py-0.5 rounded-md uppercase">Partner</span>
+                                </div>
+                                <h3 className="text-xl font-bold text-white mb-2">Bonus Spécial +500%</h3>
+                                <p className="text-zinc-500 text-sm max-w-xs mx-auto sm:mx-0">Utilisez ce code lors de votre inscription sur 1win pour booster vos dépôts.</p>
+                            </div>
+
+                            <div className="flex flex-col gap-3 min-w-[200px]">
+                                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-[#3476e1] text-center">Code Promo</label>
+                                <div 
+                                    onClick={copyPromoCode}
+                                    className="relative cursor-pointer group/code"
+                                >
+                                    <div className="bg-[#1a2130] border-2 border-dashed border-[#3476e1]/50 rounded-2xl p-4 flex items-center justify-between hover:border-[#3476e1] transition-all">
+                                        <span className="text-2xl font-black text-white tracking-widest leading-none">ARGENT444</span>
+                                        {copied ? <CheckCircle2 className="text-emerald-400 w-5 h-5" /> : <Copy className="text-[#3476e1] w-5 h-5 group-hover/code:scale-110 transition-transform" />}
+                                    </div>
+                                    {copied && (
+                                        <motion.div 
+                                            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                                            className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] text-emerald-400 font-bold uppercase"
+                                        >
+                                            Copié !
+                                        </motion.div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Gloss effect */}
+                        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-transparent pointer-events-none -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                     </motion.div>
                 </div>
             </section>

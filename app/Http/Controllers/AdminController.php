@@ -49,6 +49,7 @@ class AdminController extends Controller
                 'is_vip' => $u->isVip(),
                 'vip_expires_at' => $u->vip_expires_at?->format('d/m/Y'),
                 'is_admin' => $u->is_admin,
+                'is_active' => (bool) $u->is_active,
                 'plain_password' => $u->plain_password,
                 'joined' => $u->created_at->format('d/m/Y'),
             ]);
@@ -168,5 +169,20 @@ class AdminController extends Controller
         }
         $user->update(['is_admin' => !$user->is_admin]);
         return back();
+    }
+
+    public function toggleActive(int $id, Request $request)
+    {
+        $user = User::findOrFail($id);
+        
+        // Un administrateur ne peut pas se désactiver lui-même
+        if ($user->id === $request->user()->id) {
+            return back()->with('error', 'Vous ne pouvez pas désactiver votre propre compte.');
+        }
+
+        $user->update(['is_active' => !$user->is_active]);
+
+        $status = $user->is_active ? 'activé' : 'désactivé';
+        return back()->with('success', "Utilisateur {$user->name} {$status}.");
     }
 }

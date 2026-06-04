@@ -80,32 +80,34 @@ export default function Pricing() {
                         </div>
 
                         {/* Plan 2: Pro */}
-                        <div className="bg-zinc-900 rounded-3xl p-8 border-2 border-emerald-500/50 shadow-[0_0_30px_rgba(16,185,129,0.15)] flex flex-col h-full relative transform md:-translate-y-4">
-                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-zinc-950 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
-                                Le plus populaire
-                            </div>
-                            <div className="mb-6">
-                                <h3 className="text-xl font-bold mb-1 text-emerald-400">Standard</h3>
-                                <p className="text-zinc-400 text-sm h-10">Optimisez vos chances avec notre algorithme.</p>
-                            </div>
-                            <div className="mb-6">
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-extrabold">2 000</span>
-                                    <span className="text-xl text-zinc-400">FCFA</span>
+                        <div className="animated-border border-emerald-animated bg-zinc-900 rounded-3xl p-8 flex flex-col h-full relative transform md:-translate-y-4 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+                            <div className="relative z-10">
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-emerald-500 text-zinc-950 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                                    Le plus populaire
                                 </div>
-                                <p className="text-sm text-emerald-500 mt-1">/ pack de 20 prédictions</p>
+                                <div className="mb-6">
+                                    <h3 className="text-xl font-bold mb-1 text-emerald-400">Standard</h3>
+                                    <p className="text-zinc-400 text-sm h-10">Optimisez vos chances avec notre algorithme.</p>
+                                </div>
+                                <div className="mb-6">
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-4xl font-extrabold text-white">2 000</span>
+                                        <span className="text-xl text-zinc-400">FCFA</span>
+                                    </div>
+                                    <p className="text-sm text-emerald-500 mt-1">/ pack de 20 prédictions</p>
+                                </div>
+                                <button 
+                                    onClick={() => initiatePayment('standard', 2000)}
+                                    className="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(16,185,129,0.4)] mb-8"
+                                >
+                                    Obtenir le pack Standard
+                                </button>
+                                <ul className="space-y-4 text-sm text-zinc-300">
+                                    <li className="flex items-start gap-3"><Check className="w-5 h-5 text-emerald-500 shrink-0" /><span>Algorithme Heatmap avancé</span></li>
+                                    <li className="flex items-start gap-3"><Check className="w-5 h-5 text-emerald-500 shrink-0" /><span>20 Crédits d'utilisation instantanés</span></li>
+                                    <li className="flex items-start gap-3"><Check className="w-5 h-5 text-emerald-500 shrink-0" /><span>Historique complet persistant</span></li>
+                                </ul>
                             </div>
-                            <button 
-                                onClick={() => initiatePayment('standard', 2000)}
-                                className="w-full py-3 px-4 bg-emerald-500 hover:bg-emerald-400 text-zinc-950 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(16,185,129,0.4)] mb-8"
-                            >
-                                Obtenir le pack Standard
-                            </button>
-                            <ul className="space-y-4 text-sm text-zinc-300 flex-1">
-                                <li className="flex items-start gap-3"><Check className="w-5 h-5 text-emerald-500 shrink-0" /><span>Algorithme Heatmap avancé</span></li>
-                                <li className="flex items-start gap-3"><Check className="w-5 h-5 text-emerald-500 shrink-0" /><span>20 Crédits d'utilisation instantanés</span></li>
-                                <li className="flex items-start gap-3"><Check className="w-5 h-5 text-emerald-500 shrink-0" /><span>Historique complet persistant</span></li>
-                            </ul>
                         </div>
 
                         {/* Plan 3: Max */}
@@ -163,32 +165,34 @@ export default function Pricing() {
                         </div>
 
                         {/* VIP 2: Mensuel */}
-                        <div className="bg-gradient-to-b from-yellow-900/40 to-zinc-900 rounded-3xl p-8 border-2 border-yellow-500 shadow-[0_0_40px_rgba(234,179,8,0.15)] flex flex-col h-full relative transform md:-translate-y-4">
-                            <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-zinc-950 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1">
-                                <Crown className="w-3 h-3" /> Rentabilité Max
-                            </div>
-                            <div className="mb-6">
-                                <h3 className="text-2xl font-bold mb-1 text-yellow-400">Mensuel</h3>
-                                <p className="text-zinc-300 text-sm h-10">La meilleure offre pour dominer le jeu.</p>
-                            </div>
-                            <div className="mb-6">
-                                <div className="flex items-baseline gap-1">
-                                    <span className="text-4xl font-extrabold text-white">15 000</span>
-                                    <span className="text-xl text-zinc-300">FCFA</span>
+                        <div className="animated-border border-yellow-animated bg-zinc-900 rounded-3xl p-8 flex flex-col h-full relative transform md:-translate-y-4 shadow-[0_0_40px_rgba(234,179,8,0.15)]">
+                            <div className="relative z-10">
+                                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-zinc-950 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                                    <Crown className="w-3 h-3" /> Rentabilité Max
                                 </div>
-                                <p className="text-sm text-yellow-400 mt-1">/ 30 Jours</p>
+                                <div className="mb-6">
+                                    <h3 className="text-2xl font-bold mb-1 text-yellow-400">Mensuel</h3>
+                                    <p className="text-zinc-300 text-sm h-10">La meilleure offre pour dominer le jeu.</p>
+                                </div>
+                                <div className="mb-6">
+                                    <div className="flex items-baseline gap-1">
+                                        <span className="text-4xl font-extrabold text-white">15 000</span>
+                                        <span className="text-xl text-zinc-300">FCFA</span>
+                                    </div>
+                                    <p className="text-sm text-yellow-400 mt-1">/ 30 Jours</p>
+                                </div>
+                                <button 
+                                    onClick={() => initiatePayment('vip_monthly', 15000)}
+                                    className="w-full py-3 px-4 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 rounded-xl font-extrabold transition-all shadow-[0_0_20px_rgba(234,179,8,0.4)] mb-8"
+                                >
+                                    Devenir VIP (30 Jours)
+                                </button>
+                                <ul className="space-y-4 text-sm text-zinc-200">
+                                    <li className="flex items-start gap-3"><Crown className="w-5 h-5 text-yellow-400 shrink-0 fill-yellow-400" /><span>Prédictions 100% illimitées</span></li>
+                                    <li className="flex items-start gap-3"><Check className="w-5 h-5 text-yellow-400 shrink-0" /><span>Rentabilisé en 7 jours de jeu régulier</span></li>
+                                    <li className="flex items-start gap-3"><Check className="w-5 h-5 text-yellow-400 shrink-0" /><span>Support prioritaire 24/7</span></li>
+                                </ul>
                             </div>
-                            <button 
-                                onClick={() => initiatePayment('vip_monthly', 15000)}
-                                className="w-full py-3 px-4 bg-yellow-500 hover:bg-yellow-400 text-zinc-950 rounded-xl font-extrabold transition-all shadow-[0_0_20px_rgba(234,179,8,0.4)] mb-8"
-                            >
-                                Devenir VIP (30 Jours)
-                            </button>
-                            <ul className="space-y-4 text-sm text-zinc-200 flex-1">
-                                <li className="flex items-start gap-3"><Crown className="w-5 h-5 text-yellow-400 shrink-0 fill-yellow-400" /><span>Prédictions 100% illimitées</span></li>
-                                <li className="flex items-start gap-3"><Check className="w-5 h-5 text-yellow-400 shrink-0" /><span>Rentabilisé en 7 jours de jeu régulier</span></li>
-                                <li className="flex items-start gap-3"><Check className="w-5 h-5 text-yellow-400 shrink-0" /><span>Support prioritaire 24/7</span></li>
-                            </ul>
                         </div>
 
                         {/* VIP 3: Trimestriel */}

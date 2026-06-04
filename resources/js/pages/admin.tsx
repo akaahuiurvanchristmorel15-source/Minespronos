@@ -1,6 +1,6 @@
 import { Head, router, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
-import { Crown, Users, Wifi, CreditCard, Trash2, Shield, Search, ArrowLeft, Plus, Pencil, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { Crown, Users, Wifi, CreditCard, Trash2, Shield, Search, ArrowLeft, Plus, Pencil, X, ChevronDown, ChevronUp, Power, PowerOff } from 'lucide-react';
 
 interface Stats {
     connected_users: number;
@@ -27,6 +27,7 @@ interface User {
     is_vip: boolean;
     vip_expires_at: string | null;
     is_admin: boolean;
+    is_active: boolean;
     plain_password: string | null;
     joined: string;
 }
@@ -146,33 +147,37 @@ function UserFormModal({ user, newAccount, onClose }: { user?: User | null; newA
 }
 
 /* ── Mobile user card ─────────────────────────────── */
-function UserCard({ user, onEdit, onDelete, deleting }: {
+function UserCard({ user, onEdit, onDelete, onToggleActive, deleting }: {
     user: User;
     onEdit: (u: User) => void;
     onDelete: (u: User) => void;
+    onToggleActive: (u: User) => void;
     deleting: boolean;
 }) {
     const [expanded, setExpanded] = useState(false);
 
     return (
-        <div className="bg-zinc-900/60 border border-zinc-800 rounded-2xl overflow-hidden transition-all">
+        <div className={`bg-zinc-900/60 border rounded-2xl overflow-hidden transition-all ${user.is_active ? 'border-zinc-800' : 'border-red-900/40 opacity-75'}`}>
             {/* Card header — always visible */}
             <div
                 className="flex items-center gap-3 px-4 py-3.5 cursor-pointer"
                 onClick={() => setExpanded(v => !v)}
             >
                 {/* Avatar */}
-                <div className="w-9 h-9 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center flex-shrink-0">
-                    <span className="text-sm font-black text-zinc-400">{user.name.charAt(0).toUpperCase()}</span>
+                <div className={`w-9 h-9 rounded-xl border flex items-center justify-center flex-shrink-0 ${user.is_active ? 'bg-zinc-800 border-zinc-700' : 'bg-red-900/20 border-red-900/30'}`}>
+                    <span className={`text-sm font-black ${user.is_active ? 'text-zinc-400' : 'text-red-400'}`}>{user.name.charAt(0).toUpperCase()}</span>
                 </div>
 
                 <div className="flex-1 min-w-0">
-                    <p className="font-bold text-white text-sm truncate">{user.name}</p>
+                    <p className={`font-bold text-sm truncate ${user.is_active ? 'text-white' : 'text-zinc-500 line-through'}`}>{user.name}</p>
                     <p className="text-zinc-500 font-mono text-[11px] truncate">{user.account_number}</p>
                 </div>
 
                 {/* Status badge */}
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 flex gap-1">
+                    {!user.is_active && (
+                        <span className="text-[10px] font-black uppercase bg-red-500/15 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full">Banni</span>
+                    )}
                     {user.is_admin && (
                         <span className="text-[10px] font-black uppercase bg-orange-500/15 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-full">Admin</span>
                     )}
@@ -180,9 +185,6 @@ function UserCard({ user, onEdit, onDelete, deleting }: {
                         <span className="text-[10px] font-black uppercase bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 px-2 py-0.5 rounded-full flex items-center gap-1">
                             <Crown className="w-2.5 h-2.5" /> VIP
                         </span>
-                    )}
-                    {!user.is_admin && !user.is_vip && (
-                        <span className="text-[10px] font-black uppercase bg-zinc-800 text-zinc-500 px-2 py-0.5 rounded-full">Standard</span>
                     )}
                 </div>
 
@@ -226,18 +228,27 @@ function UserCard({ user, onEdit, onDelete, deleting }: {
                     )}
 
                     {/* Actions */}
-                    <div className="flex gap-2 pt-1">
+                    <div className="flex flex-wrap gap-2 pt-1">
                         <button
                             onClick={() => onEdit(user)}
                             className="flex-1 flex items-center justify-center gap-1.5 text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10 text-xs font-bold py-2.5 rounded-xl transition-all border border-zinc-800 hover:border-emerald-500/20"
                         >
                             <Pencil className="w-3.5 h-3.5" /> Modifier
                         </button>
+                        <button
+                            onClick={() => onToggleActive(user)}
+                            className={`flex-1 flex items-center justify-center gap-1.5 text-xs font-bold py-2.5 rounded-xl transition-all border ${user.is_active 
+                                ? 'text-orange-400 border-zinc-800 hover:bg-orange-500/10 hover:border-orange-500/20' 
+                                : 'text-emerald-400 border-emerald-500/20 bg-emerald-500/5 hover:bg-emerald-500/10'}`}
+                        >
+                            {user.is_active ? <PowerOff className="w-3.5 h-3.5" /> : <Power className="w-3.5 h-3.5" />}
+                            {user.is_active ? 'Désactiver' : 'Activer'}
+                        </button>
                         {!user.is_admin && (
                             <button
                                 onClick={() => onDelete(user)}
                                 disabled={deleting}
-                                className="flex-1 flex items-center justify-center gap-1.5 text-zinc-600 hover:text-red-400 hover:bg-red-500/10 text-xs font-bold py-2.5 rounded-xl transition-all disabled:opacity-40 border border-zinc-800 hover:border-red-500/20"
+                                className="w-full flex items-center justify-center gap-1.5 text-zinc-600 hover:text-red-400 hover:bg-red-500/10 text-xs font-bold py-2.5 rounded-xl transition-all disabled:opacity-40 border border-zinc-800 hover:border-red-500/20"
                             >
                                 <Trash2 className="w-3.5 h-3.5" />
                                 {deleting ? '...' : 'Supprimer'}
@@ -299,6 +310,14 @@ export default function AdminPanel({ stats, payments, users }: Props) {
         setDeletingId(user.id);
         router.delete(`/admin/users/${user.id}`, {
             onFinish: () => setDeletingId(null),
+        });
+    };
+
+    const handleToggleActive = (user: User) => {
+        const action = user.is_active ? 'Désactiver' : 'Activer';
+        if (!confirm(`${action} « ${user.name} » ?`)) return;
+        router.post(`/admin/users/${user.id}/toggle-active`, {}, {
+            preserveScroll: true
         });
     };
 
@@ -439,6 +458,7 @@ export default function AdminPanel({ stats, payments, users }: Props) {
                                     user={user}
                                     onEdit={u => setEditingUser(u)}
                                     onDelete={handleDelete}
+                                    onToggleActive={handleToggleActive}
                                     deleting={deletingId === user.id}
                                 />
                             ))}
@@ -468,7 +488,7 @@ export default function AdminPanel({ stats, payments, users }: Props) {
                                                             <span className="text-xs font-black text-zinc-400">{user.name.charAt(0).toUpperCase()}</span>
                                                         </div>
                                                         <div>
-                                                            <p className="font-bold text-white">{user.name}</p>
+                                                            <p className={`font-bold ${user.is_active ? 'text-white' : 'text-zinc-500 line-through'}`}>{user.name}</p>
                                                             <p className="text-zinc-500 text-xs">ID #{user.id}</p>
                                                         </div>
                                                     </div>
@@ -486,17 +506,22 @@ export default function AdminPanel({ stats, payments, users }: Props) {
                                                     <span className="font-extrabold text-emerald-400 text-lg">{user.credits}</span>
                                                 </td>
                                                 <td className="px-4 py-4 text-center">
-                                                    {user.is_admin && (
-                                                        <span className="text-[10px] font-black uppercase bg-orange-500/15 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-full">Admin</span>
-                                                    )}
-                                                    {user.is_vip && !user.is_admin && (
-                                                        <span className="text-[10px] font-black uppercase bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 px-2 py-0.5 rounded-full flex items-center justify-center gap-1">
-                                                            <Crown className="w-2.5 h-2.5" /> VIP
-                                                        </span>
-                                                    )}
-                                                    {!user.is_admin && !user.is_vip && (
-                                                        <span className="text-[10px] font-black uppercase bg-zinc-800 text-zinc-500 px-2 py-0.5 rounded-full">Standard</span>
-                                                    )}
+                                                    <div className="flex flex-col items-center gap-1">
+                                                        {user.is_admin && (
+                                                            <span className="text-[10px] font-black uppercase bg-orange-500/15 text-orange-400 border border-orange-500/30 px-2 py-0.5 rounded-full">Admin</span>
+                                                        )}
+                                                        {user.is_vip && !user.is_admin && (
+                                                            <span className="text-[10px] font-black uppercase bg-yellow-500/15 text-yellow-400 border border-yellow-500/30 px-2 py-0.5 rounded-full flex items-center justify-center gap-1">
+                                                                <Crown className="w-2.5 h-2.5" /> VIP
+                                                            </span>
+                                                        )}
+                                                        {!user.is_active && (
+                                                            <span className="text-[10px] font-black uppercase bg-red-500/15 text-red-500 border border-red-500/30 px-2 py-0.5 rounded-full">Banni</span>
+                                                        )}
+                                                        {user.is_active && !user.is_admin && !user.is_vip && (
+                                                            <span className="text-[10px] font-black uppercase bg-zinc-800 text-zinc-500 px-2 py-0.5 rounded-full">Standard</span>
+                                                        )}
+                                                    </div>
                                                 </td>
                                                 <td className="px-4 py-4 text-center">
                                                     <span className="text-zinc-500 text-xs font-mono whitespace-nowrap">{user.joined}</span>
@@ -508,6 +533,16 @@ export default function AdminPanel({ stats, payments, users }: Props) {
                                                             className="inline-flex items-center gap-1.5 text-zinc-500 hover:text-emerald-400 hover:bg-emerald-500/10 text-xs font-bold px-3 py-1.5 rounded-full transition-all border border-transparent hover:border-emerald-500/20"
                                                         >
                                                             <Pencil className="w-3 h-3" /> Modifier
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleToggleActive(user)}
+                                                            className={`inline-flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full transition-all border border-transparent ${user.is_active 
+                                                                ? 'text-orange-400 hover:bg-orange-500/10 hover:border-orange-500/20' 
+                                                                : 'text-emerald-400 hover:bg-emerald-500/10 hover:border-emerald-500/20 bg-emerald-500/5'}`}
+                                                            title={user.is_active ? 'Désactiver' : 'Activer'}
+                                                        >
+                                                            {user.is_active ? <PowerOff className="w-3 h-3" /> : <Power className="w-3 h-3" />}
+                                                            {user.is_active ? 'Désactiver' : 'Activer'}
                                                         </button>
                                                         {!user.is_admin && (
                                                             <button

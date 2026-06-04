@@ -1,9 +1,11 @@
 import { Head, router, Link, usePage } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
+import { toast } from 'sonner';
 import { MinesGrid } from '@/components/MinesGrid';
 import { CreditBalance } from '@/components/CreditBalance';
 import { PredictionHistory } from '@/components/PredictionHistory';
+import { NoCreditsModal } from '@/components/NoCreditsModal';
 import AppLayout from '@/layouts/app-layout';
 
 interface Prediction {
@@ -109,6 +111,7 @@ export default function Dashboard({ predictions }: { predictions: Prediction[] }
     const [oneWinId, setOneWinId] = useState('');
     const [isLinking, setIsLinking] = useState(false);
     const [showLinkAnimation, setShowLinkAnimation] = useState(false);
+    const [showNoCredits, setShowNoCredits] = useState(false);
 
     const [ping, setPing] = useState(12);
     useEffect(() => {
@@ -118,6 +121,34 @@ export default function Dashboard({ predictions }: { predictions: Prediction[] }
     }, [isOneWinLinked]);
 
     const [dataBytes, setDataBytes] = useState(0);
+    
+    // Recurring reminders for linking 1win account
+    useEffect(() => {
+        if (isOneWinLinked) return;
+
+        const messages = [
+            "Liez votre ID 1win pour une précision maximale ! 🔗",
+            "Utilisez le code promo ARGENT444 pour +500% de bonus sur 1win ! 💰"
+        ];
+        let index = 0;
+
+        const interval = setInterval(() => {
+            toast(messages[index % messages.length], {
+                description: "Optimisez vos sessions de jeu dès maintenant.",
+                action: {
+                    label: "Lier ID",
+                    onClick: () => {
+                        const input = document.querySelector('input[placeholder="Entrez votre ID 1win..."]') as HTMLInputElement;
+                        if (input) input.focus();
+                    }
+                },
+            });
+            index++;
+        }, 50000);
+
+        return () => clearInterval(interval);
+    }, [isOneWinLinked]);
+
     useEffect(() => {
         if (!isOneWinLinked) return;
         const interval = setInterval(() => setDataBytes(prev => prev + Math.floor(Math.random() * 200) + 50), 1000);
@@ -155,9 +186,13 @@ export default function Dashboard({ predictions }: { predictions: Prediction[] }
             }
         } catch (error: any) {
             console.error(error);
-            if (error.response?.status === 402) alert(error.response.data.error);
-            else if (error.response?.status === 429) alert("Veuillez patienter avant de refaire une prédiction (anti-spam).");
-            else alert("Une erreur est survenue.");
+            if (error.response?.status === 402) {
+                setShowNoCredits(true);
+            } else if (error.response?.status === 429) {
+                alert("Veuillez patienter avant de refaire une prédiction (anti-spam).");
+            } else {
+                alert("Une erreur est survenue.");
+            }
         } finally {
             setIsLoading(false);
         }
@@ -401,6 +436,11 @@ export default function Dashboard({ predictions }: { predictions: Prediction[] }
                         <PredictionHistory predictions={predictions || []} />
                     </div>
                 </div>
+
+                <NoCreditsModal 
+                    isOpen={showNoCredits} 
+                    onClose={() => setShowNoCredits(false)} 
+                />
             </div>
         </div>
     );

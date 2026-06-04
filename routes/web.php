@@ -23,6 +23,7 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/users/{id}', [\App\Http\Controllers\AdminController::class, 'updateUser'])->name('admin.updateUser');
         Route::delete('/users/{id}', [\App\Http\Controllers\AdminController::class, 'deleteUser'])->name('admin.deleteUser');
         Route::post('/users/{id}/toggle-admin', [\App\Http\Controllers\AdminController::class, 'toggleAdmin'])->name('admin.toggleAdmin');
+        Route::post('/users/{id}/toggle-active', [\App\Http\Controllers\AdminController::class, 'toggleActive'])->name('admin.toggleActive');
     });
 });
 

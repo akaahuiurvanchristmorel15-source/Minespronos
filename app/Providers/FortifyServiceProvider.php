@@ -48,15 +48,15 @@ class FortifyServiceProvider extends ServiceProvider
             // Si c'est un email (Admin)
             if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
                 $user = \App\Models\User::where('email', $login)->first();
-                // Vérifier que c'est bien un admin
-                if ($user && $user->is_admin && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
+                // Vérifier que c'est bien un admin et qu'il est actif
+                if ($user && $user->is_admin && $user->is_active && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
                     return $user;
                 }
             } 
             // Sinon c'est un numéro de compte (Utilisateur normal)
             else {
                 $user = \App\Models\User::where('account_number', $login)->first();
-                if ($user && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
+                if ($user && $user->is_active && \Illuminate\Support\Facades\Hash::check($password, $user->password)) {
                     return $user;
                 }
             }
