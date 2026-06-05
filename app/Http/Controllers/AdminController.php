@@ -25,43 +25,13 @@ class AdminController extends Controller
             ->where('vip_expires_at', '>', now())
             ->count();
 
-        $payments = Payment::with('user')
-            ->orderBy('created_at', 'desc')
-            ->take(50)
-            ->get()
-            ->map(fn($p) => [
-                'id' => $p->id,
-                'user_name' => $p->user?->name ?? 'Inconnu',
-                'user_email' => $p->user?->account_number ?? '—',
-                'amount' => $p->amount,
-                'plan' => $p->plan ?? $p->transaction_ref ?? '—',
-                'status' => $p->status,
-                'date' => $p->created_at->format('d/m/Y H:i'),
-            ]);
+        $users = User::orderBy('created_at', 'desc')->get();
 
-        $users = User::orderBy('created_at', 'desc')
-            ->get()
-            ->map(fn($u) => [
-                'id' => $u->id,
-                'name' => $u->name,
-                'account_number' => $u->account_number,
-                'credits' => $u->credits,
-                'is_vip' => $u->isVip(),
-                'vip_expires_at' => $u->vip_expires_at?->format('d/m/Y'),
-                'is_admin' => $u->is_admin,
-                'is_active' => (bool) $u->is_active,
-                'plain_password' => $u->plain_password,
-                'joined' => $u->created_at->format('d/m/Y'),
-            ]);
-
-        return inertia('admin', [
-            'stats' => [
-                'connected_users' => $connectedUsers,
-                'total_users' => $totalUsers,
-                'vip_users' => $vipUsers,
-                'total_credits' => $totalCreditsDistributed,
-            ],
-            'payments' => $payments,
+        return view('admin.index', [
+            'totalUsers' => $totalUsers,
+            'activeUsers' => $connectedUsers,
+            'adminCount' => User::where('is_admin', true)->count(),
+            'vipUsers' => $vipUsers,
             'users' => $users,
         ]);
     }
